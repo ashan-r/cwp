@@ -1,0 +1,22 @@
+image: composer:2.0
+
+pipelines:
+  default:
+    - step:
+        name: Zip and Deploy
+        script:
+          # Zip the "abc" folder
+          - zip -r abc.zip abc
+
+          # Replace the deployment steps below with your specific deployment logic.
+          # For example, you can use SCP to copy the zip file to a server.
+          # Or, if deploying to an external service like AWS S3, you can use AWS CLI.
+
+          # Example: Deploying via SCP to a server
+          # - scp abc.zip user@server:/path/to/deployment/directory/
+
+          # Example: Deploying to AWS S3 (assuming AWS CLI is configured)
+          # - aws s3 cp abc.zip s3://your-s3-bucket/
+
+        artifacts:
+          - abc.zip

@@ -1,0 +1,22 @@
+@font-face {
+  font-family: "Medilazar";
+  src: url("../fonts/MedilazarRegular.eot");
+  src: url("../fonts/MedilazarRegular.eot") format("embedded-opentype"), url("../fonts/MedilazarRegular.woff2") format("woff2"), url("../fonts/MedilazarRegular.woff") format("woff"),
+    url("../fonts/MedilazarRegular.ttf") format("truetype"), url("../fonts/MedilazarRegular.svg#MedilazarRegular") format("svg");
+}
+
+@font-face {
+  font-family: "Medilazar";
+  src: url("../fonts/MedilazarMedium.eot");
+  src: url("../fonts/MedilazarMedium.eot") format("embedded-opentype"), url("../fonts/MedilazarMedium.woff2") format("woff2"), url("../fonts/MedilazarMedium.woff") format("woff"),
+    url("../fonts/MedilazarMedium.ttf") format("truetype"), url("../fonts/MedilazarMedium.svg#MedilazarMedium") format("svg");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Medilazar";
+  src: url("../fonts/MedilazarBold.eot");
+  src: url("../fonts/MedilazarBold.eot") format("embedded-opentype"), url("../fonts/MedilazarBold.woff2") format("woff2"), url("../fonts/MedilazarBold.woff") format("woff"),
+    url("../fonts/MedilazarBold.ttf") format("truetype"), url("../fonts/MedilazarBold.svg#MedilazarBold") format("svg");
+  font-weight: 600;
+}

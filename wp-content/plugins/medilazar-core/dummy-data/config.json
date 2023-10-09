@@ -1,0 +1,65 @@
+{
+    "1": {
+        "name": "Home 1",
+        "screenshot": "http://source.wpopal.com/medilazar/dummy_data/medilazar/home-1.jpg",
+        "rev_sliders": [
+            "http://source.wpopal.com/medilazar/dummy_data/revsliders/home-1/slider-1.zip"
+        ]
+    },
+    "2": {
+        "name": "Home 2",
+        "screenshot": "http://source.wpopal.com/medilazar/dummy_data/medilazar/home-2.jpg",
+        "rev_sliders": [
+            "http://source.wpopal.com/medilazar/dummy_data/revsliders/home-2/slider-2.zip"
+        ],
+        "xml": "home-2.xml"
+    },
+    "3": {
+        "name": "Home 3",
+        "screenshot": "http://source.wpopal.com/medilazar/dummy_data/medilazar/home-3.jpg",
+        "rev_sliders": [
+            "http://source.wpopal.com/medilazar/dummy_data/revsliders/home-3/slider-3.zip"
+        ],
+        "xml": "home-3.xml"
+    },
+    "4": {
+        "name": "Home 4",
+        "screenshot": "http://source.wpopal.com/medilazar/dummy_data/medilazar/home-4.jpg",
+        "rev_sliders": [
+            "http://source.wpopal.com/medilazar/dummy_data/revsliders/home-4/slider-4.zip"
+        ],
+        "xml": "home-4.xml"
+    },
+    "5": {
+        "name": "Home 5",
+        "screenshot": "http://source.wpopal.com/medilazar/dummy_data/medilazar/home-5.jpg",
+        "rev_sliders": [
+            "http://source.wpopal.com/medilazar/dummy_data/revsliders/home-5/slider-5.zip"
+        ],
+        "xml": "home-5.xml"
+    },
+    "6": {
+        "name": "Home 6",
+        "screenshot": "http://source.wpopal.com/medilazar/dummy_data/medilazar/home-6.jpg",
+        "rev_sliders": [
+            "http://source.wpopal.com/medilazar/dummy_data/revsliders/home-6/slider-6.zip"
+        ],
+        "xml": "home-6.xml"
+    },
+    "7": {
+        "name": "Home 7",
+        "screenshot": "http://source.wpopal.com/medilazar/dummy_data/medilazar/home-7.jpg",
+        "rev_sliders": [
+            "http://source.wpopal.com/medilazar/dummy_data/revsliders/home-7/slider-1.zip"
+        ],
+        "xml": "home-7.xml"
+    },
+    "8": {
+        "name": "Home 8",
+        "screenshot": "http://source.wpopal.com/medilazar/dummy_data/medilazar/home-8.jpg",
+        "rev_sliders": [
+            "http://source.wpopal.com/medilazar/dummy_data/revsliders/home-8/slider-8.zip"
+        ],
+        "xml": "home-8.xml"
+    }
+}

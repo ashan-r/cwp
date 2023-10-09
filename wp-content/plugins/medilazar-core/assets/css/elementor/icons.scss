@@ -1,0 +1,669 @@
+@font-face {
+    font-family: "opal-icon";
+    src: url('fonts/opal-icon.eot');
+    src: url('fonts/opal-icon.eot?#iefix') format('eot'),
+    url('fonts/opal-icon.woff2') format('woff2'),
+    url('fonts/opal-icon.woff') format('woff'),
+    url('fonts/opal-icon.ttf') format('truetype'),
+    url('fonts/opal-icon.svg#opal-icon') format('svg');
+}
+
+[class*="opal-icon-"]:before{
+    font-family: "opal-icon";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    text-decoration: none;
+    text-transform: none;
+}
+
+.opal-icon {
+    font-family: "opal-icon";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    text-decoration: none;
+    text-transform: none;
+}
+
+@function opal-icon-char($filename) {
+    $char: "";
+
+    @if $filename == acid-reflux {
+    $char: "\E001";
+}
+    @if $filename == add-to-cart {
+    $char: "\E002";
+}
+    @if $filename == address {
+    $char: "\E003";
+}
+    @if $filename == anchor {
+    $char: "\E004";
+}
+    @if $filename == angle-left {
+    $char: "\E005";
+}
+    @if $filename == angle-right {
+    $char: "\E006";
+}
+    @if $filename == arrow-left {
+    $char: "\E007";
+}
+    @if $filename == arrow-right {
+    $char: "\E008";
+}
+    @if $filename == aspirin2 {
+    $char: "\E009";
+}
+    @if $filename == asthma {
+    $char: "\E00A";
+}
+    @if $filename == authentic {
+    $char: "\E00B";
+}
+    @if $filename == badge-percent {
+    $char: "\E00C";
+}
+    @if $filename == bar2 {
+    $char: "\E00D";
+}
+    @if $filename == birth-control {
+    $char: "\E00E";
+}
+    @if $filename == book {
+    $char: "\E00F";
+}
+    @if $filename == boot {
+    $char: "\E010";
+}
+    @if $filename == bow-arrow {
+    $char: "\E011";
+}
+    @if $filename == box-alt {
+    $char: "\E012";
+}
+    @if $filename == bullseye {
+    $char: "\E013";
+}
+    @if $filename == campground {
+    $char: "\E014";
+}
+    @if $filename == cart-empty {
+    $char: "\E015";
+}
+    @if $filename == cart {
+    $char: "\E016";
+}
+    @if $filename == chevron-down {
+    $char: "\E017";
+}
+    @if $filename == chevron-left {
+    $char: "\E018";
+}
+    @if $filename == chevron-right {
+    $char: "\E019";
+}
+    @if $filename == chevron-up {
+    $char: "\E01A";
+}
+    @if $filename == clock {
+    $char: "\E01B";
+}
+    @if $filename == close {
+    $char: "\E01C";
+}
+    @if $filename == compare {
+    $char: "\E01D";
+}
+    @if $filename == consultations {
+    $char: "\E01E";
+}
+    @if $filename == delivery {
+    $char: "\E01F";
+}
+    @if $filename == delivery2 {
+    $char: "\E020";
+}
+    @if $filename == depression {
+    $char: "\E021";
+}
+    @if $filename == diagnostic {
+    $char: "\E022";
+}
+    @if $filename == e-pharmacy {
+    $char: "\E023";
+}
+    @if $filename == email {
+    $char: "\E024";
+}
+    @if $filename == envelope2 {
+    $char: "\E025";
+}
+    @if $filename == experience {
+    $char: "\E026";
+}
+    @if $filename == families {
+    $char: "\E027";
+}
+    @if $filename == filter {
+    $char: "\E028";
+}
+    @if $filename == fish {
+    $char: "\E029";
+}
+    @if $filename == free-delivery {
+    $char: "\E02A";
+}
+    @if $filename == friendly {
+    $char: "\E02B";
+}
+    @if $filename == globe-asia {
+    $char: "\E02C";
+}
+    @if $filename == glucose-meter {
+    $char: "\E02D";
+}
+    @if $filename == hair-loss {
+    $char: "\E02E";
+}
+    @if $filename == hand-holding {
+    $char: "\E02F";
+}
+    @if $filename == health {
+    $char: "\E030";
+}
+    @if $filename == heart-rate {
+    $char: "\E031";
+}
+    @if $filename == heart {
+    $char: "\E032";
+}
+    @if $filename == help {
+    $char: "\E033";
+}
+    @if $filename == high-cholesterol {
+    $char: "\E034";
+}
+    @if $filename == hood-cloak {
+    $char: "\E035";
+}
+    @if $filename == hypo-thyroidism {
+    $char: "\E036";
+}
+    @if $filename == insurance {
+    $char: "\E037";
+}
+    @if $filename == labs-tests {
+    $char: "\E038";
+}
+    @if $filename == leavedetail {
+    $char: "\E039";
+}
+    @if $filename == medicine {
+    $char: "\E03A";
+}
+    @if $filename == medicines00 {
+    $char: "\E03B";
+}
+    @if $filename == mental-disorder {
+    $char: "\E03C";
+}
+    @if $filename == menu {
+    $char: "\E03D";
+}
+    @if $filename == minus {
+    $char: "\E03E";
+}
+    @if $filename == mom-baby {
+    $char: "\E03F";
+}
+    @if $filename == next {
+    $char: "\E040";
+}
+    @if $filename == no-favorites {
+    $char: "\E041";
+}
+    @if $filename == nowaiting {
+    $char: "\E042";
+}
+    @if $filename == offers {
+    $char: "\E043";
+}
+    @if $filename == orders {
+    $char: "\E044";
+}
+    @if $filename == others {
+    $char: "\E045";
+}
+    @if $filename == payment {
+    $char: "\E046";
+}
+    @if $filename == personal {
+    $char: "\E047";
+}
+    @if $filename == pharma {
+    $char: "\E048";
+}
+    @if $filename == phone {
+    $char: "\E049";
+}
+    @if $filename == phone2 {
+    $char: "\E04A";
+}
+    @if $filename == pincodes {
+    $char: "\E04B";
+}
+    @if $filename == plus {
+    $char: "\E04C";
+}
+    @if $filename == previous {
+    $char: "\E04D";
+}
+    @if $filename == quality {
+    $char: "\E04E";
+}
+    @if $filename == quickview {
+    $char: "\E04F";
+}
+    @if $filename == runny {
+    $char: "\E050";
+}
+    @if $filename == savingmade {
+    $char: "\E051";
+}
+    @if $filename == search {
+    $char: "\E052";
+}
+    @if $filename == seedling {
+    $char: "\E053";
+}
+    @if $filename == seemeds {
+    $char: "\E054";
+}
+    @if $filename == sexual {
+    $char: "\E055";
+}
+    @if $filename == shield-check {
+    $char: "\E056";
+}
+    @if $filename == shipping-fast {
+    $char: "\E057";
+}
+    @if $filename == shuttle-van {
+    $char: "\E058";
+}
+    @if $filename == support {
+    $char: "\E059";
+}
+    @if $filename == talkto {
+    $char: "\E05A";
+}
+    @if $filename == th-grid {
+    $char: "\E05B";
+}
+    @if $filename == th-list {
+    $char: "\E05C";
+}
+    @if $filename == tradition {
+    $char: "\E05D";
+}
+    @if $filename == undo-alt {
+    $char: "\E05E";
+}
+    @if $filename == upto {
+    $char: "\E05F";
+}
+    @if $filename == user-headset {
+    $char: "\E060";
+}
+    @if $filename == user {
+    $char: "\E061";
+}
+    @if $filename == user2 {
+    $char: "\E062";
+}
+    @if $filename == video {
+    $char: "\E063";
+}
+    @if $filename == vitamin2 {
+    $char: "\E064";
+}
+    @if $filename == wellness {
+    $char: "\E065";
+}
+    @if $filename == wishlist-fill {
+    $char: "\E066";
+}
+    @if $filename == wishlist {
+    $char: "\E067";
+}
+    @if $filename == with {
+    $char: "\E068";
+}
+
+@return $char;
+}
+
+@mixin opal-icon($filename, $insert: before) {
+&:#{$insert} {
+    content: opal-icon-char($filename);
+}
+}
+
+.opal-icon-acid-reflux {
+    @include opal-icon(acid-reflux);
+}
+.opal-icon-add-to-cart {
+    @include opal-icon(add-to-cart);
+}
+.opal-icon-address {
+    @include opal-icon(address);
+}
+.opal-icon-anchor {
+    @include opal-icon(anchor);
+}
+.opal-icon-angle-left {
+    @include opal-icon(angle-left);
+}
+.opal-icon-angle-right {
+    @include opal-icon(angle-right);
+}
+.opal-icon-arrow-left {
+    @include opal-icon(arrow-left);
+}
+.opal-icon-arrow-right {
+    @include opal-icon(arrow-right);
+}
+.opal-icon-aspirin2 {
+    @include opal-icon(aspirin2);
+}
+.opal-icon-asthma {
+    @include opal-icon(asthma);
+}
+.opal-icon-authentic {
+    @include opal-icon(authentic);
+}
+.opal-icon-badge-percent {
+    @include opal-icon(badge-percent);
+}
+.opal-icon-bar2 {
+    @include opal-icon(bar2);
+}
+.opal-icon-birth-control {
+    @include opal-icon(birth-control);
+}
+.opal-icon-book {
+    @include opal-icon(book);
+}
+.opal-icon-boot {
+    @include opal-icon(boot);
+}
+.opal-icon-bow-arrow {
+    @include opal-icon(bow-arrow);
+}
+.opal-icon-box-alt {
+    @include opal-icon(box-alt);
+}
+.opal-icon-bullseye {
+    @include opal-icon(bullseye);
+}
+.opal-icon-campground {
+    @include opal-icon(campground);
+}
+.opal-icon-cart-empty {
+    @include opal-icon(cart-empty);
+}
+.opal-icon-cart {
+    @include opal-icon(cart);
+}
+.opal-icon-chevron-down {
+    @include opal-icon(chevron-down);
+}
+.opal-icon-chevron-left {
+    @include opal-icon(chevron-left);
+}
+.opal-icon-chevron-right {
+    @include opal-icon(chevron-right);
+}
+.opal-icon-chevron-up {
+    @include opal-icon(chevron-up);
+}
+.opal-icon-clock {
+    @include opal-icon(clock);
+}
+.opal-icon-close {
+    @include opal-icon(close);
+}
+.opal-icon-compare {
+    @include opal-icon(compare);
+}
+.opal-icon-consultations {
+    @include opal-icon(consultations);
+}
+.opal-icon-delivery {
+    @include opal-icon(delivery);
+}
+.opal-icon-delivery2 {
+    @include opal-icon(delivery2);
+}
+.opal-icon-depression {
+    @include opal-icon(depression);
+}
+.opal-icon-diagnostic {
+    @include opal-icon(diagnostic);
+}
+.opal-icon-e-pharmacy {
+    @include opal-icon(e-pharmacy);
+}
+.opal-icon-email {
+    @include opal-icon(email);
+}
+.opal-icon-envelope2 {
+    @include opal-icon(envelope2);
+}
+.opal-icon-experience {
+    @include opal-icon(experience);
+}
+.opal-icon-families {
+    @include opal-icon(families);
+}
+.opal-icon-filter {
+    @include opal-icon(filter);
+}
+.opal-icon-fish {
+    @include opal-icon(fish);
+}
+.opal-icon-free-delivery {
+    @include opal-icon(free-delivery);
+}
+.opal-icon-friendly {
+    @include opal-icon(friendly);
+}
+.opal-icon-globe-asia {
+    @include opal-icon(globe-asia);
+}
+.opal-icon-glucose-meter {
+    @include opal-icon(glucose-meter);
+}
+.opal-icon-hair-loss {
+    @include opal-icon(hair-loss);
+}
+.opal-icon-hand-holding {
+    @include opal-icon(hand-holding);
+}
+.opal-icon-health {
+    @include opal-icon(health);
+}
+.opal-icon-heart-rate {
+    @include opal-icon(heart-rate);
+}
+.opal-icon-heart {
+    @include opal-icon(heart);
+}
+.opal-icon-help {
+    @include opal-icon(help);
+}
+.opal-icon-high-cholesterol {
+    @include opal-icon(high-cholesterol);
+}
+.opal-icon-hood-cloak {
+    @include opal-icon(hood-cloak);
+}
+.opal-icon-hypo-thyroidism {
+    @include opal-icon(hypo-thyroidism);
+}
+.opal-icon-insurance {
+    @include opal-icon(insurance);
+}
+.opal-icon-labs-tests {
+    @include opal-icon(labs-tests);
+}
+.opal-icon-leavedetail {
+    @include opal-icon(leavedetail);
+}
+.opal-icon-medicine {
+    @include opal-icon(medicine);
+}
+.opal-icon-medicines00 {
+    @include opal-icon(medicines00);
+}
+.opal-icon-mental-disorder {
+    @include opal-icon(mental-disorder);
+}
+.opal-icon-menu {
+    @include opal-icon(menu);
+}
+.opal-icon-minus {
+    @include opal-icon(minus);
+}
+.opal-icon-mom-baby {
+    @include opal-icon(mom-baby);
+}
+.opal-icon-next {
+    @include opal-icon(next);
+}
+.opal-icon-no-favorites {
+    @include opal-icon(no-favorites);
+}
+.opal-icon-nowaiting {
+    @include opal-icon(nowaiting);
+}
+.opal-icon-offers {
+    @include opal-icon(offers);
+}
+.opal-icon-orders {
+    @include opal-icon(orders);
+}
+.opal-icon-others {
+    @include opal-icon(others);
+}
+.opal-icon-payment {
+    @include opal-icon(payment);
+}
+.opal-icon-personal {
+    @include opal-icon(personal);
+}
+.opal-icon-pharma {
+    @include opal-icon(pharma);
+}
+.opal-icon-phone {
+    @include opal-icon(phone);
+}
+.opal-icon-phone2 {
+    @include opal-icon(phone2);
+}
+.opal-icon-pincodes {
+    @include opal-icon(pincodes);
+}
+.opal-icon-plus {
+    @include opal-icon(plus);
+}
+.opal-icon-previous {
+    @include opal-icon(previous);
+}
+.opal-icon-quality {
+    @include opal-icon(quality);
+}
+.opal-icon-quickview {
+    @include opal-icon(quickview);
+}
+.opal-icon-runny {
+    @include opal-icon(runny);
+}
+.opal-icon-savingmade {
+    @include opal-icon(savingmade);
+}
+.opal-icon-search {
+    @include opal-icon(search);
+}
+.opal-icon-seedling {
+    @include opal-icon(seedling);
+}
+.opal-icon-seemeds {
+    @include opal-icon(seemeds);
+}
+.opal-icon-sexual {
+    @include opal-icon(sexual);
+}
+.opal-icon-shield-check {
+    @include opal-icon(shield-check);
+}
+.opal-icon-shipping-fast {
+    @include opal-icon(shipping-fast);
+}
+.opal-icon-shuttle-van {
+    @include opal-icon(shuttle-van);
+}
+.opal-icon-support {
+    @include opal-icon(support);
+}
+.opal-icon-talkto {
+    @include opal-icon(talkto);
+}
+.opal-icon-th-grid {
+    @include opal-icon(th-grid);
+}
+.opal-icon-th-list {
+    @include opal-icon(th-list);
+}
+.opal-icon-tradition {
+    @include opal-icon(tradition);
+}
+.opal-icon-undo-alt {
+    @include opal-icon(undo-alt);
+}
+.opal-icon-upto {
+    @include opal-icon(upto);
+}
+.opal-icon-user-headset {
+    @include opal-icon(user-headset);
+}
+.opal-icon-user {
+    @include opal-icon(user);
+}
+.opal-icon-user2 {
+    @include opal-icon(user2);
+}
+.opal-icon-video {
+    @include opal-icon(video);
+}
+.opal-icon-vitamin2 {
+    @include opal-icon(vitamin2);
+}
+.opal-icon-wellness {
+    @include opal-icon(wellness);
+}
+.opal-icon-wishlist-fill {
+    @include opal-icon(wishlist-fill);
+}
+.opal-icon-wishlist {
+    @include opal-icon(wishlist);
+}
+.opal-icon-with {
+    @include opal-icon(with);
+}

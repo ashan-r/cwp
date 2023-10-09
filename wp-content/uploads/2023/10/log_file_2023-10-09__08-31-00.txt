@@ -1,0 +1,47 @@
+
+---Downloaded files---
+The import files for: Home 1 were successfully downloaded!
+Initial max execution time = 300
+Files info:
+Site URL = https://qa.orbetec360.qualitapps.com
+Data file = /MyDataDrive/ROCA/Orbetc360/wp-content/plugins/medilazar-core/dummy-data/content.xml
+Widget file = not defined!
+Customizer file = not defined!
+Redux files:
+not defined!
+
+------
+New AJAX call!
+
+
+------
+New AJAX call!
+
+
+------
+New AJAX call!
+
+
+------
+New AJAX call!
+[WARNING] Failed to import "Newsletter": Invalid post type mc4wp-form
+
+
+------
+New AJAX call!
+[WARNING] Failed to import "Newsletter": Invalid post type mc4wp-form
+[ERROR] Failed to import "Home12_img2" (Media)
+
+
+------
+New AJAX call!
+[WARNING] Failed to import "Newsletter": Invalid post type mc4wp-form
+
+
+------
+New AJAX call!
+[WARNING] Failed to import "Newsletter": Invalid post type mc4wp-form
+
+
+---ocdi/after_import---
+

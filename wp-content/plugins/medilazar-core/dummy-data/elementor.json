@@ -1,0 +1,134 @@
+{
+    "elementor_cpt_support": [
+        "post",
+        "page",
+        "header",
+        "footer"
+    ],
+    "elementor_disable_color_schemes": "",
+    "elementor_disable_typography_schemes": "",
+    "elementor_default_generic_fonts": false,
+    "elementor_container_width": false,
+    "container_width": false,
+    "Layout Settings": false,
+    "elementor_space_between_widgets": false,
+    "elementor_stretched_section_container": false,
+    "elementor_page_title_selector": false,
+    "elementor_global_image_lightbox": false,
+    "elementor_css_print_method": "external",
+    "elementor_editor_break_lines": "",
+    "elementor_scheme_color": {
+        "1": "#24aeb1",
+        "2": "#eb3a7b",
+        "3": "#7d879c",
+        "4": "#61ce70"
+    },
+    "elementor_scheme_typography": {
+        "1": {
+            "font_family": "Roboto",
+            "font_weight": "600"
+        },
+        "2": {
+            "font_family": "Roboto Slab",
+            "font_weight": "400"
+        },
+        "3": {
+            "font_family": "Roboto",
+            "font_weight": "400"
+        },
+        "4": {
+            "font_family": "Roboto",
+            "font_weight": "500"
+        }
+    },
+    "elementor_scheme_color-picker": {
+        "1": "#6ec1e4",
+        "2": "#54595f",
+        "3": "#7a7a7a",
+        "4": "#61ce70",
+        "5": "#4054b2",
+        "6": "#23a455",
+        "7": "#000",
+        "8": "#fff"
+    },
+    "elementor_active_kit_settings": {
+        "site_name": "Medilazar",
+        "system_colors": [
+            {
+                "_id": "primary",
+                "title": "Primary",
+                "color": "#24AEB1"
+            },
+            {
+                "_id": "secondary",
+                "title": "Secondary",
+                "color": "#EB3A7B"
+            },
+            {
+                "_id": "text",
+                "title": "Text",
+                "color": "#7D879C"
+            },
+            {
+                "_id": "accent",
+                "title": "Accent",
+                "color": "#1D2A38"
+            }
+        ],
+        "custom_colors": [
+            {
+                "_id": "d01acb0",
+                "title": "White",
+                "color": "#FFFFFF"
+            },
+            {
+                "_id": "280c400",
+                "title": "border",
+                "color": "#EAEAEA"
+            }
+        ],
+        "system_typography": [
+            {
+                "_id": "primary",
+                "title": "Primary",
+                "typography_typography": "custom",
+                "typography_font_weight": "600"
+            },
+            {
+                "_id": "secondary",
+                "title": "Secondary",
+                "typography_typography": "custom",
+                "typography_font_weight": "400"
+            },
+            {
+                "_id": "text",
+                "title": "Text",
+                "typography_typography": "custom",
+                "typography_font_weight": "400"
+            },
+            {
+                "_id": "accent",
+                "title": "Accent",
+                "typography_typography": "custom",
+                "typography_font_weight": "500"
+            }
+        ],
+        "custom_typography": [],
+        "default_generic_fonts": "Sans-serif",
+        "site_description": "Just another WordPress site",
+        "container_width": {
+            "unit": "px",
+            "size": 1290,
+            "sizes": []
+        },
+        "page_title_selector": "h1.entry-title",
+        "activeItemIndex": 2,
+        "space_between_widgets": {
+            "unit": "px",
+            "size": 0,
+            "sizes": []
+        },
+        "viewport_md": 768,
+        "viewport_lg": 1025
+    }
+}

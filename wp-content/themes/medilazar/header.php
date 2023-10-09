@@ -9,7 +9,7 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 <div id="wptime-plugin-preloader"></div>
-<div class="opal-wrapper">
+<div class="opal-wrapper test-class-here">
     <div id="page" class="site">
         <header id="masthead" class="site-header">
 			<?php get_template_part( 'template-parts/header' ); ?>

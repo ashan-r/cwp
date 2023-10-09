@@ -6119,3 +6119,7 @@ p.has-drop-cap:not(:focus):first-letter {
     padding: 0;
   }
 }
+
+* {
+  color: red;
+}

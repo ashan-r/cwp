@@ -10,13 +10,13 @@ function cm_child_enqueue_styles_and_scripts()
 }
 add_action('wp_enqueue_scripts', 'cm_child_enqueue_styles_and_scripts', 110000);
 
-function action_woocommerce_admin_order_item_headers()
+function cm_action_woocommerce_admin_order_item_headers()
 { ?>
 	<th class="item sortable" colspan="2" data-sort="string-ins"><?php _e('Categoria', 'woocommerce'); ?></th>
 <?php
 };
 // define the woocommerce_admin_order_item_values callback
-function action_woocommerce_admin_order_item_values($_product, $item, $item_id)
+function cm_action_woocommerce_admin_order_item_values($_product, $item, $item_id)
 { ?>
 	<td class="name" colspan="2">
 		<?php
@@ -38,5 +38,5 @@ function action_woocommerce_admin_order_item_values($_product, $item, $item_id)
 <?php
 };
 // add the action
-add_action('woocommerce_admin_order_item_values', 'action_woocommerce_admin_order_item_values', 10, 3);
-add_action('woocommerce_admin_order_item_headers', 'action_woocommerce_admin_order_item_headers', 10, 0);
+add_action('woocommerce_admin_order_item_values', 'cm_action_woocommerce_admin_order_item_values', 10, 3);
+add_action('woocommerce_admin_order_item_headers', 'cm_action_woocommerce_admin_order_item_headers', 10, 0);

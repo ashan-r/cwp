@@ -10,12 +10,15 @@ function cm_child_enqueue_styles_and_scripts()
 }
 add_action('wp_enqueue_scripts', 'cm_child_enqueue_styles_and_scripts', 110000);
 
+/**
+ * Add category column to Woocommerce order details page in admin
+ */
 function cm_action_woocommerce_admin_order_item_headers()
 { ?>
 	<th class="item sortable" colspan="2" data-sort="string-ins"><?php _e('Categoria', 'woocommerce'); ?></th>
 <?php
 };
-// define the woocommerce_admin_order_item_values callback
+
 function cm_action_woocommerce_admin_order_item_values($_product, $item, $item_id)
 { ?>
 	<td class="name" colspan="2">
@@ -37,6 +40,22 @@ function cm_action_woocommerce_admin_order_item_values($_product, $item, $item_i
 	</td>
 <?php
 };
-// add the action
+
 add_action('woocommerce_admin_order_item_values', 'cm_action_woocommerce_admin_order_item_values', 10, 3);
 add_action('woocommerce_admin_order_item_headers', 'cm_action_woocommerce_admin_order_item_headers', 10, 0);
+
+
+/**
+ * Override osf_single_product_quantity_label with 
+ */
+remove_action('woocommerce_before_add_to_cart_quantity', 'osf_single_product_quantity_label', 10);
+add_action('woocommerce_before_add_to_cart_quantity', 'cm_single_product_quantity_label', 10);
+function cm_single_product_quantity_label()
+{
+	global $product;
+	$min_value = apply_filters('woocommerce_quantity_input_min', $product->get_min_purchase_quantity(), $product);
+	$max_value = apply_filters('woocommerce_quantity_input_max', $product->get_max_purchase_quantity(), $product);
+	if ($max_value && $min_value !== $max_value) {
+		echo '<label class="quantity_label">' . __('Cantidad:', 'medilazar') . ' </label>';
+	}
+}

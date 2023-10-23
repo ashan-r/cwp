@@ -11,3 +11,49 @@ Version: 1.1
 License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
+/* Wishlist */
+/* Handheld footer bar */
+
+:root {
+    --primary-color: #0a759d;
+    --highlight-color: #eb3a7b;
+}
+
+/* Wishlist */
+.wishlist_table .product-add-to-cart .add_to_cart {
+    display: flex !important;
+}
+
+.yith-wcwl-share h4.yith-wcwl-share-title {
+    margin-right: 10px;
+}
+
+.woocommerce table.wishlist_table tbody td {
+    padding-top: 10px;
+    padding-bottom: 0px;
+}
+
+.entry-content .wishlist_table table:not(.shop_table) tbody>tr:nth-child(odd) {
+    background-color: transparent;
+}
+
+.entry-content .wishlist_table ins {
+    background-color: transparent;
+}
+
+.wishlist_table li .item-details table.item-details-table td {
+    font-size: 1em !important;
+}
+
+/* Wishlist - end */
+
+/* Handheld footer bar */
+.handheld-footer-bar [class*="columns-"] a {
+    background-color: var(--primary-color);
+}
+
+.handheld-footer-bar .cart .footer-cart-contents .count {
+    background-color: var(--highlight-color);
+}
+
+/* Handheld footer bar - end */

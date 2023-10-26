@@ -50,12 +50,19 @@ add_action('woocommerce_admin_order_item_headers', 'cm_action_woocommerce_admin_
  */
 remove_action('woocommerce_before_add_to_cart_quantity', 'osf_single_product_quantity_label', 10);
 add_action('woocommerce_before_add_to_cart_quantity', 'cm_single_product_quantity_label', 10);
-function cm_single_product_quantity_label()
-{
+function cm_single_product_quantity_label() {
 	global $product;
 	$min_value = apply_filters('woocommerce_quantity_input_min', $product->get_min_purchase_quantity(), $product);
 	$max_value = apply_filters('woocommerce_quantity_input_max', $product->get_max_purchase_quantity(), $product);
 	if ($max_value && $min_value !== $max_value) {
-		echo '<label class="quantity_label">' . __('Cantidad:', 'medilazar') . ' </label>';
+	echo '<label class="quantity_label">' . __('Cantidad:', 'medilazar') . ' </label>';
 	}
 }
+
+/**
+ * Change add to cart button text on single page
+ */
+function cm_woocommerce_add_to_cart_button_text_single() {
+    return __( 'Añadir a la cesta', 'woocommerce' ); 
+}
+add_filter( 'woocommerce_product_single_add_to_cart_text', 'cm_woocommerce_add_to_cart_button_text_single' ); 

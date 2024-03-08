@@ -81,7 +81,7 @@ add_filter( 'woocommerce_product_single_add_to_cart_text', 'cm_woocommerce_add_t
  * its callback to process the request.
  */
 add_action('rest_api_init', function () {
-    register_rest_route('orbetec/v1', '/punchout_login', array(
+    register_rest_route('comercialmedica/v1', '/punchout_login', array(
         'methods' => 'POST',
         'callback' => 'handle_xml_request',
     ));

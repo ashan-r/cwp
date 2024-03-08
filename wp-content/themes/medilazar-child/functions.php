@@ -131,9 +131,9 @@ function handle_xml_request(WP_REST_Request $request) {
         } elseif (!is_email($userEmail)) { // Check if the userEmail is valid
 			$returnCode = 'E';
 			$response_message = 'Invalid email address.';
-        } elseif (!filter_var(html_entity_decode($returnURL), FILTER_VALIDATE_URL) !== false) { // Check if the returnURL is a valid URL
+        } elseif (empty($returnURL)) {
             $returnCode = 'E';
-            $response_message = 'Invalid return URL.';
+            $response_message = 'Return URL is missing.';
         } else {
 
 			// Check if the user exists

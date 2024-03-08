@@ -11,3 +11,172 @@ Version: 1.1
 License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
+
+/* Wishlist */
+/* Handheld footer bar */
+/* Buttons */
+/* Cart and checkout summary */
+/* Cart */
+/* Checkout */
+/* 404 */
+/* Account */
+/* Category - Product list */
+/* Home */
+
+:root {
+    --primary-color: #0a759d;
+    --primary-dark-color: #07536e;
+    --highlight-color: #eb3a7b;
+}
+
+/************************************************ Wishlist ***********************************************/
+.wishlist_table .product-add-to-cart .add_to_cart {
+    display: flex !important;
+}
+.yith-wcwl-share h4.yith-wcwl-share-title {
+    margin-right: 10px;
+}
+.woocommerce table.wishlist_table tbody td {
+    padding-top: 10px;
+    padding-bottom: 0px;
+}
+.entry-content .wishlist_table table:not(.shop_table) tbody>tr:nth-child(odd) {
+    background-color: transparent;
+}
+.entry-content .wishlist_table ins {
+    background-color: transparent;
+}
+.wishlist_table li .item-details table.item-details-table td {
+    font-size: 1em !important;
+}
+.wishlist_table.mobile .product-name h3 {
+    font-size: 1rem;
+}
+/*********************************************** Wishlist - end ***********************************************/
+
+/*********************************************** Handheld footer bar ***********************************************/
+.handheld-footer-bar [class*="columns-"] a {
+    background-color: var(--primary-color);
+}
+.handheld-footer-bar .cart .footer-cart-contents .count {
+    background-color: var(--highlight-color);
+}
+/*********************************************** Handheld footer bar - end ***********************************************/
+
+/*********************************************** Buttons ***********************************************/
+.checkout_coupon .form-row-last button,
+#payment .place-order .button,
+.woocommerce-cart .return-to-shop a,
+form.woocommerce-form-login .button[type="submit"] {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.checkout_coupon .form-row-last button:hover,
+#payment .place-order .button:hover,
+.woocommerce-cart .return-to-shop a:hover,
+form.woocommerce-form-login .button[type="submit"]:hover {
+    background-color: var(--primary-dark-color);
+    border-color: var(--primary-dark-color);
+}
+/*********************************************** Buttons - end ***********************************************/
+
+/*********************************************** Cart and checkout summary ***********************************************/
+.cart-collaterals .cart_totals {
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+@media(min-width: 576px) {
+    .woocommerce-checkout-review-order {
+        padding-top: 25px;
+        padding-bottom: 25px;
+    }
+}
+
+table.cart:not(.wishlist_table) td:not(.actions) {
+    padding-top: 10px;
+}
+
+@media(min-width: 768px) {
+    table.cart:not(.wishlist_table) td:not(.actions) {
+        padding-bottom: 0px;
+        }
+}
+
+.cart-collaterals .cart_totals td,
+table.woocommerce-checkout-review-order-table td,
+table.woocommerce-checkout-review-order-table th {
+    padding: 0.5em 0;
+}
+
+table.woocommerce-checkout-review-order-table .product-total {
+    vertical-align: top;
+}
+
+.cart-collaterals #shipping_method li,
+table.woocommerce-checkout-review-order-table #shipping_method li {
+    display: flex;
+    align-items: center;
+    margin: 0 0 0.5rem;
+}
+
+.cart-collaterals #shipping_method li label,
+table.woocommerce-checkout-review-order-table #shipping_method li label {
+    margin: 0;
+}
+
+.cart-collaterals .cart_totals .shipping td,
+table.woocommerce-checkout-review-order-table .shipping td {
+background-color: #fff;
+    padding: 1rem;
+}
+/*********************************************** Cart and checkout summary - end ***********************************************/
+
+/*********************************************** Cart ***********************************************/
+a.shipping-calculator-button {
+    color: var(--primary-color);
+}
+
+.woocommerce-cart .wc-empty-cart-message {
+    flex: 0 0 100%;
+    max-width: 100%;
+}
+
+@media(max-width: 1200px) {
+    .woocommerce-cart .woocommerce-cart-form {
+        flex: 100%;
+        max-width: 100%;
+    }
+}
+/*********************************************** Cart - end ***********************************************/
+
+/*********************************************** Checkout ***********************************************/
+.woocommerce-shipping-fields .form-row:not(#shipping_address_1_field):not(#shipping_address_2_field) {
+    margin: 0;
+}
+.woocommerce-shipping-fields label {
+    margin-top: 23px;
+    margin-bottom: 12px;
+        ;
+    font-size: 0.875rem;
+}
+/*********************************************** Checkout - end ***********************************************/
+
+/*********************************************** 404 ***********************************************/
+.error404 .site-content-contain {
+    background-color: transparent;
+}
+/*********************************************** 404 - end ***********************************************/
+
+/*********************************************** Account ***********************************************/
+.woocommerce-account .woocommerce {
+    padding-top: 20px;
+}
+/*********************************************** Account - end ***********************************************/
+/*********************************************** Category - Product list ***********************************************/
+li.product .product-image {
+    padding: 1rem;
+}
+
+/*********************************************** Category - Product list - end ***********************************************/

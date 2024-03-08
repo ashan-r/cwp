@@ -290,6 +290,7 @@ function cm_login_user_with_url_session_key() {
     }
 }
 
+add_action('init', 'cm_login_user_with_url_session_key');
 
 /**
  * Adds custom error messages to the login page.

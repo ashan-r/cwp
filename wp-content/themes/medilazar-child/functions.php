@@ -76,14 +76,14 @@ add_filter( 'woocommerce_product_single_add_to_cart_text', 'cm_woocommerce_add_t
 /**
  * Registers a custom REST API route for punchout login.
  *
- * Adds a new route to the WordPress REST API under the 'orbetec/v1' namespace. The route
+ * Adds a new route to the WordPress REST API under the 'comercialmedica/v1' namespace. The route
  * '/punchout_login' accepts POST requests and uses the 'handle_xml_request' function as
  * its callback to process the request.
  */
 add_action('rest_api_init', function () {
     register_rest_route('comercialmedica/v1', '/punchout_login', array(
         'methods' => 'POST',
-        'callback' => 'handle_xml_request',
+        'callback' => 'handle_punchout_login_request',
     ));
 });
 
@@ -99,7 +99,42 @@ add_action('rest_api_init', function () {
  * @param WP_REST_Request $request The request object containing the XML data.
  * @return WP_REST_Response The XML response with the login result.
  */
-function handle_xml_request(WP_REST_Request $request) {
+
+function handle_punchout_login_request(WP_REST_Request $request){
+  // Determine the content type of the request
+  $content_type = $request->get_content_type();
+    
+  if ($content_type && $content_type['value'] == 'application/x-www-form-urlencoded') {
+      // Handle XML request
+      $body_params = $request->get_body_params();
+     // $xml_data = $body_params['loginRequest'] ?? null;
+
+      $xml_data = $request->get_param('loginRequest');
+      $xml = simplexml_load_string($xml_data);
+      // Check if xml_data is not null
+      if ($xml_data === null) {
+          throw new Exception('No XML data provided.');
+      }else if (!$xml) {
+          throw new Exception('Invalid XML format.');
+      }else  if($xml_data) {
+        // Process XML data
+        return handle_xml_request($xml_data);
+    }   
+    
+  } elseif ($content_type && $content_type['value'] == 'text/xml') {
+      // Handle cXML request
+      $body = $request->get_body();
+      if (strpos($body, 'PunchOutSetupRequest') !== false) {
+          // Process cXML data
+          return handle_cxml_request($body);
+      }
+  }
+}
+
+
+
+
+function handle_xml_request($xml) {
     global $wpdb; // Access the WordPress DB
 
     $returnCode = 'U';
@@ -107,19 +142,6 @@ function handle_xml_request(WP_REST_Request $request) {
     $loginURL = '';
 
     try {
-        $xml_data = $request->get_param('loginRequest');
-
-        // Check if xml_data is not null
-        if ($xml_data === null) {
-            throw new Exception('No XML data provided.');
-        }
-
-        $xml = simplexml_load_string($xml_data);
-
-        if (!$xml) {
-            throw new Exception('Invalid XML format.');
-        }
-
         $username = (string)$xml->header->login->username;
         $password = (string)$xml->header->login->password;
         $userEmail = (string)$xml->body->loginInfo->userInfo->userContactInfo->userEmail; 
@@ -255,6 +277,96 @@ function generate_xml_response($response_data) {
 
     return $dom->saveXML();
 }
+
+
+
+function handle_cxml_request($cxml_body) {
+    global $wpdb; // Access the WordPress DB
+
+    // Initialize response parameters
+    $returnCode = 'Failure';
+    $response_message = 'An unexpected error occurred.';
+    $loginURL = '';
+
+    try {
+    
+        // Load the cXML string as an object
+        $cxml = new SimpleXMLElement($cxml_body);
+
+        // Extract necessary information from the cXML
+        $username = (string)$cxml->Header->Sender->Credential->Identity;
+        $password = (string)$cxml->Header->Sender->Credential->SharedSecret;
+        $userEmail = (string)$cxml->Request->PunchOutSetupRequest->Contact->Email;
+        $returnURL = (string)$cxml->Request->PunchOutSetupRequest->BrowserFormPost->URL;
+
+
+        if (empty($returnURL)) {
+            $returnCode = 'E';
+            $response_message = 'Return URL is missing.';
+        } else{
+                /// Check if the user exists
+                if (!username_exists($username)) {
+                    $returnCode = 'A';
+                    $response_message = 'User does not exist.';
+                    } else {
+                        $user = wp_authenticate($username, $password);
+
+                            if (!is_wp_error($user)) {
+                                wp_set_current_user($user->ID);
+                                wp_set_auth_cookie($user->ID);
+
+                                $returnCode = 'S';
+
+                                // Generate a unique session key
+                                $session_key = wp_generate_password(20, false);
+
+                                // Insert the session key and userEmail into the wp_cm_sessions table
+                                $wpdb->insert(
+                                    $wpdb->prefix . 'cm_sessions', 
+                                    [
+                                        'user_id' => $user->ID,
+                                        'session_key' => $session_key,
+                                        'session_email' => $userEmail, 
+                                        'created_at' => current_time('mysql'),
+                                        'expires_at' => date('Y-m-d H:i:s', time() + 60 * 60 * 24)
+                                    ],
+                                    [
+                                        '%d', // user_id
+                                        '%s', // session_key
+                                        '%s', // session_email
+                                        '%s', // created_at
+                                        '%s'  // expires_at
+                                    ]
+                                );
+
+                                // Construct the login URL with the WordPress site's URL, session key, userEmail, and if there are other additional parameters
+                                $loginURL = add_query_arg(array(
+                                    'sessionKey' => $session_key, 
+                                    'userEmail' => $userEmail
+                                ), home_url());
+
+                                $response_message = ''; // No message needed for success
+                            } else {
+                                $returnCode = 'A';
+                                $response_message = 'Authentication Failure';
+                            }
+                        }
+
+        }
+        
+    } catch (Exception $e) {
+        $response_message = $e->getMessage();
+    }
+
+    // Assuming you have a function to generate cXML responses
+    $response_cxml = generate_cxml_response($returnCode, $response_message, $loginURL);
+    return new WP_REST_Response($response_cxml, 200, ['Content-Type' => 'text/xml']);
+}
+
+
+function generate_cxml_response($returnCode, $response_message, $loginURL) {   
+}
+
 
 
 /**

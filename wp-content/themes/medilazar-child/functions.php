@@ -352,7 +352,7 @@ function generate_xml_response($response_data) {
         $returnURL = (string)$cxml->Request->PunchOutSetupRequest->BrowserFormPost->URL;
         $payloadID = (string)$cxml['payloadID'];
         $version = (string)$cxml['version'];
-        $language = (string)$cxml['xml:lang'];
+        $language = (string) $cxml->attributes('xml', true)->lang;
 
         if (empty($returnURL)) {
             $returnCode = '400';

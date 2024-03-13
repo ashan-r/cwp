@@ -143,7 +143,7 @@ add_action('rest_api_init', function () {
   
         // Ensure cXML data is not null or empty before processing
         if (empty($body)) {
-          throw new Exception('No XML data provided.');
+            return cxml_failure_response(400, 'No XML data provided.', '','');
         }
   
         libxml_use_internal_errors(true); // Use internal libxml errors to capture XML parse errors
@@ -156,9 +156,12 @@ add_action('rest_api_init', function () {
             $errorMsg = "Invalid XML format. Errors: " . implode(', ', array_map(function($error) {
                 return trim($error->message);
             }, $errors));
-            throw new Exception($errorMsg);
+            
+            return cxml_failure_response(400, $errorMsg, '','');
+           
         } elseif (!isset($cxml->Request->PunchOutSetupRequest)) {
-            throw new Exception('Missing PunchOutSetupRequest element.');
+            return cxml_failure_response(400, 'Missing PunchOutSetupRequest element.', '','');
+           
         } else {
             // Process cXML data
             return handle_cxml_request($body);

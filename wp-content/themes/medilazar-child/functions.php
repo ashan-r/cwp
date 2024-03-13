@@ -104,18 +104,22 @@ add_action('rest_api_init', function () {
  */
 
  function handle_punchout_login_request(WP_REST_Request $request){
+
     // Determine the content type of the request
     $content_type = $request->get_content_type();
-      
-    if ($content_type && $content_type['value'] == 'application/x-www-form-urlencoded') {
+
+ 
+        
+    if ($content_type && $content_type['value'] == 'application/x-www-form-urlencoded') {     
+
+        if(empty($request->get_param('loginRequest'))){
+            return  xml_error_response('E', ' No XML data provided');
+        }
+         
         // Handle XML request
         $body_params = $request->get_body_params();
         $xml_data = $request->get_param('loginRequest');
-        
-        // Ensure XML data is not null or empty before processing
-        if (empty($xml_data)) {
-            throw new Exception('No XML data provided.');
-        }
+      
         
         libxml_use_internal_errors(true); // Use internal libxml errors
         $xml = simplexml_load_string($xml_data);
@@ -127,10 +131,10 @@ add_action('rest_api_init', function () {
             $errorMsg = "Invalid XML format. Errors: " . implode(', ', array_map(function($error) {
                 return trim($error->message);
             }, $errors));
-            throw new Exception($errorMsg);
+            return  xml_error_response('E',  $errorMsg);
         } else {
           // Process XML data
-          return handle_xml_request($xml_data);
+          return handle_xml_request($xml);
         }   
         
     } elseif ($content_type && $content_type['value'] == 'text/xml') {
@@ -177,12 +181,20 @@ function handle_xml_request($xml) {
     $loginURL = '';
 
     try {
+
+
         $username = (string)$xml->header->login->username;
         $password = (string)$xml->header->login->password;
         $userEmail = (string)$xml->body->loginInfo->userInfo->userContactInfo->userEmail; 
 		$returnURL = (string)$xml->body->loginInfo->returnURL; 
 
-        if (empty($username) || empty($password)) { 
+        if (is_null($username) || is_null($password)) {
+            $returnCode = 'E';
+            $response_message = 'Username or password missing.';
+        } elseif (!is_email($userEmail)) {
+            $returnCode = 'E';
+            $response_message = 'Invalid email address.';
+        }elseif (empty($username) || empty($password)) { 
             $returnCode = 'A';
             $response_message = 'Username or password missing.';
         } elseif (!is_email($userEmail)) { // Check if the userEmail is valid
@@ -339,15 +351,15 @@ function handle_cxml_request($cxml_body) {
         $payloadID = (string)$cxml['payloadID'];
 
         if (empty($returnURL)) {
-            $returnCode = 'E';
+            $returnCode = '400';
             $response_message = 'Return URL is missing.';
         } else{
                 /// Check if the user exists
                 if(trim($username) === ''){
-                    $returnCode = 'E';
+                    $returnCode = '400';
                     $response_message = 'username is empty.';
                 }else if (!username_exists($username)) {
-                    $returnCode = 'A';
+                    $returnCode = '400';
                     $response_message = 'User does not exist.';
                     } else {
                         $user = wp_authenticate($username, $password);
@@ -388,7 +400,7 @@ function handle_cxml_request($cxml_body) {
 
                                 $response_message = ''; // No message needed for success
                             } else {
-                                $returnCode = 'A';
+                                $returnCode = '401';
                                 $response_message = 'Authentication Failure';
                             }
                         }
@@ -401,7 +413,7 @@ function handle_cxml_request($cxml_body) {
 
     // Assuming you have a function to generate cXML responses
     $response_cxml = generate_cxml_response($returnCode, $response_message, html_entity_decode($loginURL),$payloadID);
-    return new WP_REST_Response($response_cxml, 200, ['Content-Type' => 'text/xml']);
+    return new WP_REST_Response($response_cxml, $returnCode, ['Content-Type' => 'text/xml']);
 }
 
 /**
@@ -431,7 +443,7 @@ function generate_cxml_response($returnCode, $response_message, $loginURL, $payl
     // Set the Status element based on the returnCode
     $status = $dom->createElement('Status');
     $response->appendChild($status);
-    $status->setAttribute('code', $returnCode === 'S' ? '200' : '401');
+    $status->setAttribute('code', $returnCode === 'S' ? '200' : $returnCode);
     $status->setAttribute('text', $returnCode === 'S' ? 'OK' : $response_message);
 
     if ($returnCode === 'S') {
@@ -460,7 +472,22 @@ function generate_cxml_response($returnCode, $response_message, $loginURL, $payl
     return $dom->saveXML();
 }
 
+function cxml_failure_response($returnCode, $response_message, $loginURL, $payloadIDFromRequest){
+    $response_cxml = generate_cxml_response($returnCode, $response_message, html_entity_decode($loginURL),$payloadID);
+    return new WP_REST_Response($response_cxml, $returnCode, ['Content-Type' => 'text/xml']);
+}
 
+function xml_error_response($returnCode, $response_message){
+    $response_data = [
+        'returnCode' => $returnCode,
+        'message' => $response_message,
+        'loginURL' => '',
+    ];
+
+
+    $response_xml = generate_xml_response($response_data);
+    return new WP_REST_Response($response_xml, 200, ['Content-Type' => 'application/xml']);
+}
 
 /**
  * Logs in a user based on session key and email passed via URL parameters.

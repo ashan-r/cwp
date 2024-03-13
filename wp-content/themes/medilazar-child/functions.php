@@ -332,8 +332,7 @@ function generate_xml_response($response_data) {
  * Handle request based on cXML data 
  *
  *
- */
-function handle_cxml_request($cxml_body) {
+ */function handle_cxml_request($cxml_body) {
     global $wpdb; // Access the WordPress DB
 
     // Initialize response parameters
@@ -352,6 +351,8 @@ function handle_cxml_request($cxml_body) {
         $userEmail = (string)$cxml->Request->PunchOutSetupRequest->Contact->Email;
         $returnURL = (string)$cxml->Request->PunchOutSetupRequest->BrowserFormPost->URL;
         $payloadID = (string)$cxml['payloadID'];
+        $version = (string)$cxml['version'];
+        $language = (string)$cxml['xml:lang'];
 
         if (empty($returnURL)) {
             $returnCode = '400';
@@ -415,7 +416,7 @@ function handle_cxml_request($cxml_body) {
     }
 
     // Assuming you have a function to generate cXML responses
-    $response_cxml = generate_cxml_response($returnCode, $response_message, html_entity_decode($loginURL),$payloadID);
+    $response_cxml = generate_cxml_response($returnCode, $response_message, html_entity_decode($loginURL),$payloadID, $language, $version);
     return new WP_REST_Response($response_cxml, $returnCode, ['Content-Type' => 'text/xml']);
 }
 
@@ -425,17 +426,19 @@ function handle_cxml_request($cxml_body) {
  * Creates an cXML document with a specified structure based on the provided response data.
  *
  */
-function generate_cxml_response($returnCode, $response_message, $loginURL, $payloadIDFromRequest) {
-    $dom = new DOMDocument('1.0', 'UTF-8');
-    $dom->formatOutput = true;
-    $dom->preserveWhiteSpace = false; // Minimize the output format
-    $dom->loadXML('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE cXML SYSTEM "http://xml.cxml.org/schemas/cXML/1.1.010/cXML.dtd">');
+function generate_cxml_response($returnCode, $response_message, $loginURL, $payloadIDFromRequest,$language = 'en-US',$version = '1.1.007') {
+
+    $implementation = new DOMImplementation();
+    $doctype = $implementation->createDocumentType('cXML', '', 'http://xml.cxml.org/schemas/cXML/1.1.010/cXML.dtd');
+    $dom = $implementation->createDocument(null, '', $doctype);
+    $dom->encoding = 'UTF-8';
 
     // Create the root cXML element
     $cxml = $dom->createElement('cXML');
     $dom->appendChild($cxml);
-    $cxml->setAttribute('version', '1.1.007');
-    $cxml->setAttribute('xml:lang', 'en-US');
+
+    $cxml->setAttribute('version', $version);
+    $cxml->setAttribute('xml:lang', $language);
     $cxml->setAttribute('payloadID', $payloadIDFromRequest);
     $cxml->setAttribute('timestamp', date('c'));
 
@@ -462,14 +465,7 @@ function generate_cxml_response($returnCode, $response_message, $loginURL, $payl
         $startPage->appendChild($urlElement);
         $cdata = $dom->createCDATASection($loginURL);
         $urlElement->appendChild($cdata);
-    } else {
-        // Optionally handle unsuccessful connection response modifications here
-        // Include a detailed message if the connection is unsuccessful
-        $messageElement = $dom->createElement('Message');
-        $response->appendChild($messageElement);
-        $cdataMessage = $dom->createCDATASection($response_message);
-        $messageElement->appendChild($cdataMessage);
-    }
+    } 
 
     // Return the XML string
     return $dom->saveXML();

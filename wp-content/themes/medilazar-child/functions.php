@@ -68,6 +68,7 @@ function cm_woocommerce_add_to_cart_button_text_single() {
 }
 add_filter( 'woocommerce_product_single_add_to_cart_text', 'cm_woocommerce_add_to_cart_button_text_single' ); 
 
+
 /*
 /////////////  Punchout XML Processing   ///////////////////////
 */
@@ -332,7 +333,9 @@ function generate_xml_response($response_data) {
  * Handle request based on cXML data 
  *
  *
- */function handle_cxml_request($cxml_body) {
+ */
+
+function handle_cxml_request($cxml_body) {
     global $wpdb; // Access the WordPress DB
 
     // Initialize response parameters
@@ -351,7 +354,7 @@ function generate_xml_response($response_data) {
         $userEmail = (string)$cxml->Request->PunchOutSetupRequest->Contact->Email;
         $returnURL = (string)$cxml->Request->PunchOutSetupRequest->BrowserFormPost->URL;
         $payloadID = (string)$cxml['payloadID'];
-        $version = (string)$cxml['version'];
+        $version =  (string)$cxml['version'];
         $language = (string) $cxml->attributes('xml', true)->lang;
 
         if (empty($returnURL)) {
@@ -359,13 +362,27 @@ function generate_xml_response($response_data) {
             $response_message = 'Return URL is missing.';
         } else{
                 /// Check if the user exists
-                if(trim($username) === ''){
+                $returnCode = 'E';
+                $response_message = 'Invalid email address.';
+                  if(!is_email($userEmail)){
+                    $returnCode = '400';
+                    $response_message = 'Invalid email address.';
+                }elseif (is_null($username) || is_null($password)) {
+                    $returnCode = '400';
+                    $response_message = 'Username or password missing.';
+                }elseif (empty($username) || empty($password)) { 
+                    $returnCode = '400';
+                    $response_message = 'Username or password missing.';
+                } elseif(trim($username) === ''){
                     $returnCode = '400';
                     $response_message = 'username is empty.';
                 }else if (!username_exists($username)) {
                     $returnCode = '400';
                     $response_message = 'User does not exist.';
-                    } else {
+                }elseif (empty($returnURL)) {
+                    $returnCode = '400';
+                    $response_message = 'Return URL is missing.';
+                }else {
                         $user = wp_authenticate($username, $password);
 
                             if (!is_wp_error($user)) {
@@ -412,13 +429,15 @@ function generate_xml_response($response_data) {
         }
         
     } catch (Exception $e) {
-        $response_message = $e->getMessage();
+        $returnCode = '401';
+        $response_message = 'Authentication Failure';
     }
 
     // Assuming you have a function to generate cXML responses
     $response_cxml = generate_cxml_response($returnCode, $response_message, html_entity_decode($loginURL),$payloadID, $language, $version);
     return new WP_REST_Response($response_cxml, $returnCode, ['Content-Type' => 'text/xml']);
 }
+
 
 /**
  * Generates an cXML response from an array of response data.

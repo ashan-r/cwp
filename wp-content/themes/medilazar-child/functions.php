@@ -645,3 +645,97 @@ function validate_session_key($session_key, $session_email) {
     // Invalid session
     return false;
 }
+
+
+/* ////////////////////////////////////////////
+*             MULTIPLE CART FUNCTIOALITY
+*/ ////////////////////////////////////////////
+
+
+define('CM_CART_DATA_TABLE_VERSION', '1.0');
+define('CM_CART_DATA_TABLE_VERSION_OPTION', 'cm_cart_data_table_version');
+
+/**
+ * Creates or updates the cm_cart_data table.
+ *
+ * This function checks the currently installed version of the cm_cart_data table against 
+ * a defined constant for the desired table version (CM_CART_DATA_TABLE_VERSION). If the installed
+ * version is different from the desired version, or if the table does not exist, the function 
+ * will create or update the table to match the structure defined within the function.
+ *
+ * The cm_cart_data table stores cart data associated with specific sessions, allowing for
+ * multiple carts functionality. It includes fields for a unique cart identifier (cart_id),
+ * a reference to the session ID (session_id), cart data in a longtext format (cart_data),
+ * and timestamps for creation and last update.
+ *
+ * Upon successful creation or update, the function updates a WordPress option to the current
+ * version of the table structure, ensuring that the check and update process only runs when necessary.
+ *
+ */
+function create_cm_cart_data_table() {
+    global $wpdb;
+    $charset_collate = $wpdb->get_charset_collate();
+    $table_name = $wpdb->prefix . 'cm_cart_data';
+
+    // Check the current installed version
+    $installed_ver = get_option(CM_CART_DATA_TABLE_VERSION_OPTION);
+
+    if ($installed_ver != CM_CART_DATA_TABLE_VERSION) {
+        // SQL to create or update the table
+        $sql = "CREATE TABLE $table_name (
+          cart_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+          session_id BIGINT UNSIGNED NOT NULL,
+          cart_data LONGTEXT NOT NULL,
+          created_at DATETIME NOT NULL,
+          updated_at DATETIME NOT NULL,
+          FOREIGN KEY (session_id) REFERENCES {$wpdb->prefix}cm_sessions(session_id) ON DELETE CASCADE
+        ) $charset_collate;";
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
+
+        // Update the version in the database
+        update_option(CM_CART_DATA_TABLE_VERSION_OPTION, CM_CART_DATA_TABLE_VERSION);
+    }
+}
+
+// create or update cart_data table after theme loads
+add_action('init', 'create_cm_cart_data_table');
+
+
+function is_session_specific_user() {
+    // Example of checking for a session-specific key
+    if (isset($_COOKIE['cm_session_key']) && !empty($_COOKIE['cm_session_key'])) {
+        return true; // This is a session-specific user
+    }
+    return false; // This is a normal user
+}
+
+
+add_action('woocommerce_add_to_cart', 'custom_handle_add_to_cart', 10, 6);
+function custom_handle_add_to_cart($cart_item_key, $product_id, $quantity, $variation_id, $variation, $cart_item_data) {
+    if (is_session_specific_user()) {
+        // Handle add to cart for session-specific user
+        // You may need to update session-specific cart data in the wp_cm_cart_data table
+    }
+    // Otherwise, proceed with normal WooCommerce add to cart operation
+}
+
+// Implement similar hooks for cart item removal, cart updates, etc.
+
+add_filter('woocommerce_get_cart_contents', 'custom_get_cart_contents');
+function custom_get_cart_contents($cart_contents) {
+    if (is_session_specific_user()) {
+        // Fetch session-specific cart data
+        // Modify $cart_contents based on session-specific cart data
+    }
+    return $cart_contents;
+}
+
+
+add_action('woocommerce_checkout_create_order', 'custom_checkout_create_order', 10, 2);
+function custom_checkout_create_order($order, $data) {
+    if (is_session_specific_user()) {
+        // Modify the order based on session-specific cart data
+    }
+}

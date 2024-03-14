@@ -507,6 +507,30 @@ function xml_error_response($returnCode, $response_message){
     return new WP_REST_Response($response_xml, 200, ['Content-Type' => 'application/xml']);
 }
 
+
+/**
+ * Retrieves the expiration time for a given session key from the cm_sessions table.
+ *
+ * @param string $session_key The session key to look up.
+ * @return string|null The expiration time as a string in 'Y-m-d H:i:s' format, or null if not found.
+ */
+function get_cm_session_expires_at($session_key) {
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'cm_sessions';
+
+    // Prepare the SQL query to select the expires_at field
+    $query = $wpdb->prepare(
+        "SELECT expires_at FROM $table_name WHERE session_key = %s",
+        $session_key
+    );
+
+    // Execute the query and get the result
+    $expires_at = $wpdb->get_var($query);
+
+    return $expires_at;
+}
+
+
 /**
  * Logs in a user based on session key and email passed via URL parameters.
  *
@@ -525,13 +549,29 @@ function cm_login_user_with_url_session_key() {
     $user_id = validate_session_key($session_key, $session_email);
 
     if ($user_id) {
-        // The session key is valid, and we have a user ID, so log the user in
-        wp_set_current_user($user_id);
-        wp_set_auth_cookie($user_id);
 
-        // Redirect to the homepage on Login Success
-        wp_redirect(home_url());
-        exit;
+        $expires_at = get_cm_session_expires_at($session_key);
+        $expires_at_timestamp = strtotime($expires_at);
+        $current_time = time();
+        $expiration_period = $expires_at_timestamp - $current_time;
+
+        if ($expiration_period > 0) {
+            // The session key is valid, and we have a user ID, so log the user in
+            wp_set_current_user($user_id);
+            wp_set_auth_cookie($user_id);
+            // Set the session cookie
+            set_cm_session_cookie($session_key,$expiration_period);
+            // Redirect to the homepage on Login Success
+            wp_redirect(home_url());
+            exit;
+        }else{
+            wp_logout();
+            // Redirect to the WordPress main URL
+            wp_redirect(home_url());
+            exit;
+        }
+           
+       
     } else {
 		wp_logout();
 		// Redirect to the WordPress main URL
@@ -540,7 +580,35 @@ function cm_login_user_with_url_session_key() {
     }
 }
 
+
 add_action('init', 'cm_login_user_with_url_session_key');
+
+
+/**
+ * Sets a session key cookie for the user.
+ *
+ * @param string $session_key The session key to be set in the cookie.
+ * @param int $expiration_period The number of seconds until the cookie should expire.
+ * @param string $path The path on the server in which the cookie will be available on.
+ * @param bool $secure Indicates that the cookie should only be transmitted over a secure HTTPS connection.
+ * @param bool $httponly When TRUE the cookie will be made accessible only through the HTTP protocol.
+ * @param string $samesite Prevents the browser from sending this cookie along with cross-site requests.
+ */
+function set_cm_session_cookie($session_key, $expiration_period = 86400, $path = '/', $secure = true, $httponly = false, $samesite = 'Lax') {
+    $cookie_name = 'cm_session_key';
+    $cookie_value = $session_key;
+    $expiration = time() + $expiration_period;
+    
+        setcookie($cookie_name, $cookie_value, [
+            'expires' => $expiration,
+            'path' => $path,
+            'secure' => $secure,
+            'httponly' => $httponly,
+            'samesite' => $samesite
+        ]);
+
+}
+
 
 /**
  * Adds custom error messages to the login page.

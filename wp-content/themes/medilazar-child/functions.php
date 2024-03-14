@@ -75,6 +75,56 @@ add_filter( 'woocommerce_product_single_add_to_cart_text', 'cm_woocommerce_add_t
 
 
 /**
+* CM Session Table Creation Define Versioning 
+**/
+define('CM_SESSION_TABLE_VERSION', '1.0');
+define('CM_SESSION_TABLE_VERSION_OPTION', 'cm_session_table_version');
+
+
+/**
+ * Creates the cm_sessions table in the database if it doesn't exist or updates it if the version has changed.
+ *
+ * This function checks if the cm_sessions table exists in the database. If it does not, or if the
+ * version of the table has changed, it creates or updates the table accordingly. The table is used to
+ * store session information for users, including the session ID, user ID, session key, session email,
+ * creation time, and expiration time. The user ID is a foreign key that references the ID in the users table.
+ *
+ */
+function create_cm_session_table() {
+    global $wpdb;
+    $charset_collate = $wpdb->get_charset_collate();
+    $table_name = $wpdb->prefix . 'cm_sessions';
+    
+    // Check if the table already exists
+    $table_exists = $wpdb->get_var("SHOW TABLES LIKE '{$table_name}'") == $table_name;
+
+    // Retrieve the currently installed version of the table, if any
+    $installed_ver = get_option(CM_SESSION_TABLE_VERSION_OPTION);
+
+    // Proceed if the table does not exist or if the version has changed
+    if (!$table_exists || $installed_ver != CM_SESSION_TABLE_VERSION) {
+        $sql = "CREATE TABLE $table_name (
+          session_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+          user_id BIGINT UNSIGNED NOT NULL,
+          session_key VARCHAR(255) NOT NULL,
+          session_email VARCHAR(255) NOT NULL,
+          created_at DATETIME NOT NULL,
+          expires_at DATETIME NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES {$wpdb->prefix}users(ID) ON DELETE CASCADE
+        ) $charset_collate;";
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
+
+        // Update the version in the database
+        update_option(CM_SESSION_TABLE_VERSION_OPTION, CM_SESSION_TABLE_VERSION);
+    }
+}
+
+// setup the cm_sesisons table
+add_action('after_setup_theme', 'create_cm_session_table');
+
+/**
  * Registers a custom REST API route for punchout login.
  *
  * Adds a new route to the WordPress REST API under the 'comercialmedica/v1' namespace. The route
@@ -118,7 +168,6 @@ add_action('rest_api_init', function () {
         }
          
         // Handle XML request
-        $body_params = $request->get_body_params();
         $xml_data = $request->get_param('loginRequest');
       
         
@@ -148,25 +197,34 @@ add_action('rest_api_init', function () {
         }
   
         libxml_use_internal_errors(true); // Use internal libxml errors to capture XML parse errors
-        $cxml = simplexml_load_string($body);
-        
-        // Check if the cXML is well-formed
-        if ($cxml === false) {
-            $errors = libxml_get_errors(); // Retrieve XML parse errors
-            libxml_clear_errors(); // Clear libxml error buffer
-            $errorMsg = "Invalid XML format. Errors: " . implode(', ', array_map(function($error) {
-                return trim($error->message);
-            }, $errors));
-            
-            return cxml_failure_response(400, $errorMsg, '','');
-           
-        } elseif (!isset($cxml->Request->PunchOutSetupRequest)) {
-            return cxml_failure_response(400, 'Missing PunchOutSetupRequest element.', '','');
-           
-        } else {
-            // Process cXML data
-            return handle_cxml_request($body);
-        }
+
+
+        try {
+            $cxml = simplexml_load_string($body);
+
+            if ($cxml === false) {
+                $errors = libxml_get_errors(); // Retrieve XML parse errors
+                libxml_clear_errors(); // Clear libxml error buffer
+                $errorMsg = "Invalid XML format. Errors: " . implode(', ', array_map(function($error) {
+                    return trim($error->message);
+                }, $errors));
+
+                libxml_use_internal_errors(false);
+                return cxml_failure_response(400, $errorMsg, '','');
+               
+            }elseif (!isset($cxml->Request->PunchOutSetupRequest)) {
+                return cxml_failure_response(400, 'Missing PunchOutSetupRequest element.', '','');
+               
+            } else {
+                // Process cXML data
+                return handle_cxml_request($body);
+            }
+        }catch(Exception $e){
+             // Catch any other exceptions and handle them
+            error_log("An error occurred: " . $e->getMessage());
+            return cxml_failure_response(400,$e->getMessage(), '','');
+        }     
+ 
     }
   }
   
@@ -186,7 +244,6 @@ function handle_xml_request($xml) {
 
     try {
 
-
         $username = (string)$xml->header->login->username;
         $password = (string)$xml->header->login->password;
         $userEmail = (string)$xml->body->loginInfo->userInfo->userContactInfo->userEmail; 
@@ -201,9 +258,6 @@ function handle_xml_request($xml) {
         }elseif (empty($username) || empty($password)) { 
             $returnCode = 'A';
             $response_message = 'Username or password missing.';
-        } elseif (!is_email($userEmail)) { // Check if the userEmail is valid
-			$returnCode = 'E';
-			$response_message = 'Invalid email address.';
         } elseif (empty($returnURL)) {
             $returnCode = 'E';
             $response_message = 'Return URL is missing.';
@@ -226,7 +280,7 @@ function handle_xml_request($xml) {
 					$session_key = wp_generate_password(20, false);
 	
 					// Insert the session key and userEmail into the wp_cm_sessions table
-					$wpdb->insert(
+				    $wpdb->insert(
 						$wpdb->prefix . 'cm_sessions', 
 						[
 							'user_id' => $user->ID,
@@ -334,7 +388,6 @@ function generate_xml_response($response_data) {
  *
  *
  */
-
 function handle_cxml_request($cxml_body) {
     global $wpdb; // Access the WordPress DB
 
@@ -362,9 +415,7 @@ function handle_cxml_request($cxml_body) {
             $response_message = 'Return URL is missing.';
         } else{
                 /// Check if the user exists
-                $returnCode = 'E';
-                $response_message = 'Invalid email address.';
-                  if(!is_email($userEmail)){
+                if(!is_email($userEmail)){
                     $returnCode = '400';
                     $response_message = 'Invalid email address.';
                 }elseif (is_null($username) || is_null($password)) {
@@ -438,7 +489,6 @@ function handle_cxml_request($cxml_body) {
     return new WP_REST_Response($response_cxml, $returnCode, ['Content-Type' => 'text/xml']);
 }
 
-
 /**
  * Generates an cXML response from an array of response data.
  *
@@ -491,7 +541,7 @@ function generate_cxml_response($returnCode, $response_message, $loginURL, $payl
 }
 
 function cxml_failure_response($returnCode, $response_message, $loginURL, $payloadIDFromRequest){
-    $response_cxml = generate_cxml_response($returnCode, $response_message, html_entity_decode($loginURL),$payloadID);
+    $response_cxml = generate_cxml_response($returnCode, $response_message, html_entity_decode($loginURL),$payloadIDFromRequest);
     return new WP_REST_Response($response_cxml, $returnCode, ['Content-Type' => 'text/xml']);
 }
 
@@ -528,6 +578,32 @@ function get_cm_session_expires_at($session_key) {
     $expires_at = $wpdb->get_var($query);
 
     return $expires_at;
+}
+
+
+/**
+ * Sets a session key cookie for the user.
+ *
+ * @param string $session_key The session key to be set in the cookie.
+ * @param int $expiration_period The number of seconds until the cookie should expire.
+ * @param string $path The path on the server in which the cookie will be available on.
+ * @param bool $secure Indicates that the cookie should only be transmitted over a secure HTTPS connection.
+ * @param bool $httponly When TRUE the cookie will be made accessible only through the HTTP protocol.
+ * @param string $samesite Prevents the browser from sending this cookie along with cross-site requests.
+ */
+function set_cm_session_cookie($session_key, $expiration_period = 86400, $path = '/', $secure = true, $httponly = false, $samesite = 'Lax') {
+    $cookie_name = 'cm_session_key';
+    $cookie_value = $session_key;
+    $expiration = time() + $expiration_period;
+    
+        setcookie($cookie_name, $cookie_value, [
+            'expires' => $expiration,
+            'path' => $path,
+            'secure' => $secure,
+            'httponly' => $httponly,
+            'samesite' => $samesite
+        ]);
+
 }
 
 
@@ -580,34 +656,8 @@ function cm_login_user_with_url_session_key() {
     }
 }
 
-
+//Login with session key hook
 add_action('init', 'cm_login_user_with_url_session_key');
-
-
-/**
- * Sets a session key cookie for the user.
- *
- * @param string $session_key The session key to be set in the cookie.
- * @param int $expiration_period The number of seconds until the cookie should expire.
- * @param string $path The path on the server in which the cookie will be available on.
- * @param bool $secure Indicates that the cookie should only be transmitted over a secure HTTPS connection.
- * @param bool $httponly When TRUE the cookie will be made accessible only through the HTTP protocol.
- * @param string $samesite Prevents the browser from sending this cookie along with cross-site requests.
- */
-function set_cm_session_cookie($session_key, $expiration_period = 86400, $path = '/', $secure = true, $httponly = false, $samesite = 'Lax') {
-    $cookie_name = 'cm_session_key';
-    $cookie_value = $session_key;
-    $expiration = time() + $expiration_period;
-    
-        setcookie($cookie_name, $cookie_value, [
-            'expires' => $expiration,
-            'path' => $path,
-            'secure' => $secure,
-            'httponly' => $httponly,
-            'samesite' => $samesite
-        ]);
-
-}
 
 
 /**
@@ -629,55 +679,6 @@ function cm_login_error_message($message) {
 }
 add_filter('login_message', 'cm_login_error_message');
 
-
-/**
-* CM Session Table Creation Define Versioning 
-**/
-define('CM_SESSION_TABLE_VERSION', '1.0');
-define('CM_SESSION_TABLE_VERSION_OPTION', 'cm_session_table_version');
-
-
-/**
- * Creates the cm_sessions table in the database if it doesn't exist or updates it if the version has changed.
- *
- * This function checks if the cm_sessions table exists in the database. If it does not, or if the
- * version of the table has changed, it creates or updates the table accordingly. The table is used to
- * store session information for users, including the session ID, user ID, session key, session email,
- * creation time, and expiration time. The user ID is a foreign key that references the ID in the users table.
- *
- */
-function create_cm_session_table() {
-    global $wpdb;
-    $charset_collate = $wpdb->get_charset_collate();
-    $table_name = $wpdb->prefix . 'cm_sessions';
-    
-    // Check if the table already exists
-    $table_exists = $wpdb->get_var("SHOW TABLES LIKE '{$table_name}'") == $table_name;
-
-    // Retrieve the currently installed version of the table, if any
-    $installed_ver = get_option(CM_SESSION_TABLE_VERSION_OPTION);
-
-    // Proceed if the table does not exist or if the version has changed
-    if (!$table_exists || $installed_ver != CM_SESSION_TABLE_VERSION) {
-        $sql = "CREATE TABLE $table_name (
-          session_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-          user_id BIGINT UNSIGNED NOT NULL,
-          session_key VARCHAR(255) NOT NULL,
-          session_email VARCHAR(255) NOT NULL,
-          created_at DATETIME NOT NULL,
-          expires_at DATETIME NOT NULL,
-          FOREIGN KEY (user_id) REFERENCES {$wpdb->prefix}users(ID) ON DELETE CASCADE
-        ) $charset_collate;";
-
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        dbDelta($sql);
-
-        // Update the version in the database
-        update_option(CM_SESSION_TABLE_VERSION_OPTION, CM_SESSION_TABLE_VERSION);
-    }
-}
-
-add_action('after_setup_theme', 'create_cm_session_table');
 
 /**
  * Validates a session key and email combination.

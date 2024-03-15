@@ -118,7 +118,6 @@ add_action('rest_api_init', function () {
         }
          
         // Handle XML request
-        $body_params = $request->get_body_params();
         $xml_data = $request->get_param('loginRequest');
       
         
@@ -271,7 +270,11 @@ function handle_xml_request($xml) {
 
     // Generate and return the XML response
     $response_xml = generate_xml_response($response_data);
-    return new WP_REST_Response($response_xml, 200, ['Content-Type' => 'application/xml']);
+   // return new WP_REST_Response($response_xml, 200, ['Content-Type' => 'application/xml']);
+
+    header('Content-Type: application/xml; charset=utf-8');
+	echo $response_xml;
+	return;
 }
 
 
@@ -435,7 +438,11 @@ function handle_cxml_request($cxml_body) {
 
     // Assuming you have a function to generate cXML responses
     $response_cxml = generate_cxml_response($returnCode, $response_message, html_entity_decode($loginURL),$payloadID, $language, $version);
-    return new WP_REST_Response($response_cxml, $returnCode, ['Content-Type' => 'text/xml']);
+    //return new WP_REST_Response($response_cxml, $returnCode, ['Content-Type' => 'text/xml']);
+
+    header('Content-Type: application/xml; charset=utf-8');
+	echo $response_cxml;
+	return;
 }
 
 
@@ -491,8 +498,12 @@ function generate_cxml_response($returnCode, $response_message, $loginURL, $payl
 }
 
 function cxml_failure_response($returnCode, $response_message, $loginURL, $payloadIDFromRequest){
-    $response_cxml = generate_cxml_response($returnCode, $response_message, html_entity_decode($loginURL),$payloadID);
-    return new WP_REST_Response($response_cxml, $returnCode, ['Content-Type' => 'text/xml']);
+    $response_cxml = generate_cxml_response($returnCode, $response_message, html_entity_decode($loginURL),$payloadIDFromRequest);
+   // return new WP_REST_Response($response_cxml, $returnCode, ['Content-Type' => 'text/xml']);
+  
+    header('Content-Type: application/xml; charset=utf-8');
+	echo $response_cxml;
+	return;
 }
 
 function xml_error_response($returnCode, $response_message){
@@ -504,7 +515,11 @@ function xml_error_response($returnCode, $response_message){
 
 
     $response_xml = generate_xml_response($response_data);
-    return new WP_REST_Response($response_xml, 200, ['Content-Type' => 'application/xml']);
+    //return new WP_REST_Response($response_xml, 200, ['Content-Type' => 'application/xml']);
+
+    header('Content-Type: application/xml; charset=utf-8');
+	echo $response_xml;
+	return;
 }
 
 /**
